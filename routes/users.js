@@ -2,6 +2,16 @@ var express = require('express');
 var router = express.Router();
 const models = require("../models");
 
+// 메인 페이지
+router.get('/', function(req, res, next) {
+  if(req.cookies){
+    console.log(req.cookies);
+  }
+
+  res.send("환영합니다 ~");
+});
+
+
 // 회원가입 GET
 router.get('/sign_up', function(req, res, next) {
   res.render("user/signup");
@@ -47,6 +57,11 @@ router.post("/login", async function(req,res,next){
 
   if(dbPassword === hashPassword){
     console.log("비밀번호 일치");
+    // 쿠키 설정
+    res.cookie("user", body.userEmail , {
+      expires: new Date(Date.now() + 900000),
+      httpOnly: true
+    });
     res.redirect("/users");
   }
   else{
